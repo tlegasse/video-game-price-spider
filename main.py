@@ -1,6 +1,10 @@
 import product_data_query
 import csv_builder
 import sys
+import os
+
+if not os.path.isdir('data'):
+    os.makedirs('data')
 
 if len(sys.argv) == 1:
     sys.exit("Please sypply an argument or -h for help")
