@@ -1,13 +1,6 @@
-import product_data_query
-import csv_builder
+from video_game_price_spider.product_data_query import ProductDataQuery
+from video_game_price_spider.csv_builder import CsvBuilder
 import sys
-import os
-
-if not os.path.isdir('data'):
-    os.makedirs('data')
-
-if len(sys.argv) == 1:
-    sys.exit("Please sypply an argument or -h for help")
 
 available_console_strings = {
     "brand-nintendo": [
@@ -59,39 +52,42 @@ def print_help():
         for console in available_console_strings[brand]:
             print(f"  {console}")
 
-if sys.argv[1] == '-h' or sys.argv[1] == '--help':
-    print_help()
-
-items_to_query = sys.argv[1:]
-
 def update_by_console(console: str):
-    console_data_query = product_data_query.ProductDataQuery()
+    console_data_query = ProductDataQuery()
     console_data_query.set_console(console)
 
     print(f"Querying {console}")
     console_data_query.call_data()
 
-    console_csv_builder = csv_builder.CsvBuilder(console_data_query.get_product_data(),console)
+    console_csv_builder = CsvBuilder(console_data_query.get_product_data(),console)
     console_csv_builder.write_product_data_to_csv()
 
-searching_brands = True
+def main():
+    if sys.argv[1] == '-h' or sys.argv[1] == '--help':
+        print_help()
 
-for item in items_to_query:
-    if item == '-b':
-        searching_brands = True
-        continue
-    elif item == '-c':
-        searching_brands = False
-        continue
+    if len(sys.argv) == 1:
+        sys.exit("Please sypply an argument or -h for help")
 
-    if searching_brands and item in available_console_strings:
-        for console in available_console_strings[item]:
-            update_by_console(console)
+    items_to_query = sys.argv[1:]
 
-    elif not searching_brands:
-        for brand in available_console_strings:
-            if item not in available_console_strings[brand]:
-                continue
+    searching_brands = True
 
-            update_by_console(item)
+    for item in items_to_query:
+        if item == '-b':
+            searching_brands = True
+            continue
+        elif item == '-c':
+            searching_brands = False
+            continue
 
+        if searching_brands and item in available_console_strings:
+            for console in available_console_strings[item]:
+                update_by_console(console)
+
+        elif not searching_brands:
+            for brand in available_console_strings:
+                if item not in available_console_strings[brand]:
+                    continue
+
+                update_by_console(item)

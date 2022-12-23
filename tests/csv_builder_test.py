@@ -1,10 +1,10 @@
 import unittest
-import csv_builder
+from video_game_price_spider.csv_builder import CsvBuilder
 from os import getcwd, path, remove
 
 class TestProductDataQuery(unittest.TestCase):
     _console = "test_console"
-    _base_path = getcwd() + "/data"
+    _base_path = "./price_entries"
     
     def setUp(self):
         self._product_data = [
@@ -20,7 +20,7 @@ class TestProductDataQuery(unittest.TestCase):
             }
         ]
 
-        self._csv_builder = csv_builder.CsvBuilder(
+        self._csv_builder = CsvBuilder(
             self._product_data,
             self._console
         )

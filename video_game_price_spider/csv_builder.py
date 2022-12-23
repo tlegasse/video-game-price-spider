@@ -3,7 +3,7 @@ from typing import List, Dict
 import pandas as pd
 
 class CsvBuilder:
-    _base_path = os.getcwd() + "/data"
+    _base_path = "./price_entries"
     _full_path: str
     _console: str
     _product_data: List[Dict] = []
@@ -26,6 +26,10 @@ class CsvBuilder:
         self.set_product_data(product_data)
         self.set_console(console)
         self.build_full_path()
+
+        if not os.path.isdir(self._base_path):
+            os.makedirs(self._base_path)
+
 
     def set_product_data(self, product_data: List[Dict]):
         self._product_data = product_data
