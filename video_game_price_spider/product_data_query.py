@@ -11,7 +11,7 @@ class ProductDataQuery:
         self._endpoint:str = self.get_endpoint()
         self._params:dict = self.get_params()
 
-    def set_console(self,console:str)-> None:
+    def set_console_string(self,console:str)-> None:
         self._console: str = console
 
     def set_cursor(self, cursor)-> None:

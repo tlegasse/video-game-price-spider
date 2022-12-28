@@ -8,7 +8,7 @@ class TestProductDataQuery(unittest.TestCase):
     def test_get_params(self):
         print("\nStart get_params test")
 
-        self._product_data_query.set_console(self._console)
+        self._product_data_query.set_console_string(self._console)
         params = self._product_data_query.get_params()
         self.assertEqual(
             params["cursor"],
@@ -29,15 +29,15 @@ class TestProductDataQuery(unittest.TestCase):
             100
         )
 
-    def test_set_console(self):
-        print("\nStart set_console test")
+    def test_set_console_string(self):
+        print("\nStart set_console_string test")
 
-        self._product_data_query.set_console(self._console)
+        self._product_data_query.set_console_string(self._console)
 
     def test_get_console(self):
         print("\nStart get_console test")
 
-        self._product_data_query.set_console(self._console)
+        self._product_data_query.set_console_string(self._console)
 
         self.assertEqual(
             self._product_data_query.get_console(),
@@ -47,7 +47,7 @@ class TestProductDataQuery(unittest.TestCase):
     def test_get_endpoint(self):
         print("\nStart get_endpoint test")
 
-        self._product_data_query.set_console(self._console)
+        self._product_data_query.set_console_string(self._console)
 
         self.assertEqual(
             self._product_data_query.get_endpoint(),

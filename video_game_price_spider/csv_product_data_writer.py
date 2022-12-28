@@ -1,8 +1,9 @@
 import os
 import pandas as pd
+from video_game_price_spider.product_data_writer import ProductDataWriter
 
 
-class CsvBuilder:
+class CsvProductDataWriter(ProductDataWriter):
     _base_path: str = "./price_entries"
     _full_path: str
     _console: str
@@ -28,7 +29,7 @@ class CsvBuilder:
     def build_full_path(self)-> None:
         self._full_path: str = f"{self._base_path}/{self._console}.csv"
 
-    def write_product_data_to_csv(self)-> None:
+    def write_product_data(self)-> None:
         prepared_data:dict = {}
 
         for item in self._product_data:
