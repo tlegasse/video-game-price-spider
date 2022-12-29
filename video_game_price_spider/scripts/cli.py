@@ -1,9 +1,11 @@
 import json
 import os
-from video_game_price_spider.csv_product_data_writer import CsvProductDataWriter
-from video_game_price_spider.product_data_writer import ProductDataWriter
-
 import click
+from peewee import SqliteDatabase
+
+from video_game_price_spider.models.console_model import Console
+from video_game_price_spider.models.game_console_relationship_model import GameConsoleRelationship
+from video_game_price_spider.models.game_model import Game
 
 def load_console_json() -> dict :
     path: str = os.path.join(os.getcwd(), 'data', 'console_data.json')
@@ -42,7 +44,12 @@ def sync_console_data(ctx, method: str, brands: list[str], consoles: list[str]) 
     """
     Syncs data from price chart by console or brand
     """
-    print(method)
+
+    def init_database_if_not_exists():
+        db: SqliteDatabase = SqliteDatabase("games.db")
+
+        db.create_tables([Game, Console, GameConsoleRelationship])
+
 
     def get_consoles_from_brands(ctx, brands: list[str]) -> list[str] :
         consoles_found: list = []
@@ -54,6 +61,7 @@ def sync_console_data(ctx, method: str, brands: list[str], consoles: list[str]) 
                 click.echo("Brand not found: " + brand)
 
         return consoles_found
+
 
     def get_matched_consoles(ctx, consoles: list[str]) -> list[str]:
         consoles_found: list = []
@@ -79,9 +87,28 @@ def sync_console_data(ctx, method: str, brands: list[str], consoles: list[str]) 
 
     consoles_to_sync.extend(get_matched_consoles(ctx, consoles))
 
-    click.echo(consoles_to_sync)
 
+    init_database_if_not_exists()
+    
+    game: Game = Game.create(
+        id=1,
+        name="game name",
+        console_uri="console_uri",
+        price_1="12.10",
+        price_2="12.10",
+        price_3="12.10",
+        price_change="12.10",
+        price_change_percentage="12.10",
+        price_change_sign="+",
+        product_name="Some Game",
+        product_uri="some-game",
+    )
 
+    console: Console = Console.create(
+        id=1,
+        slug="some-console",
+        name="Some console name"
+    )
 
 
 # def update_by_console(console: str):
