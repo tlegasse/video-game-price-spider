@@ -2,9 +2,11 @@ import json
 import os
 
 import click
+from terminaltables import AsciiTable
 
 from video_game_price_spider.csv_product_data_writer import CsvProductDataWriter
 from video_game_price_spider.db_product_data_writer import DbProductDataWriter
+from video_game_price_spider.ebay_parser import EbayParser
 from video_game_price_spider.product_data_query import ProductDataQuery
 from video_game_price_spider.models.game_model import Game
 
@@ -100,11 +102,36 @@ def sync_console_data(ctx, method: str, brands: list[str], consoles: list[str]) 
 
 
 @cli.command()
-@click.option('--title', '-t')
+@click.option('--title', '-t', default="", help="Search titles")
+@click.option('--console', '-c', default="", help="search consoles")
+@click.option('--reference-ebay', '-e', is_flag=True, show_default=True, default=False, help="Cross reference ebay for pricing data")
 @click.pass_obj
-def search(ctx, title):
-    games = Game.select().where(Game.product_name.contains(title))
+def search(ctx, title, console, reference_ebay):
+    if not len(title) and not len(console):
+        click.echo("Please provide a searh parameter.")
+        return
+
+    games = Game.select().where(Game.product_name.contains(title), Game.console_uri.contains(console))
+
+    table_data = [
+        ["id", "Console", "Title", "Loose Price", "CIB", "Sealed", "Price Change"]
+    ]
 
     for game in games:
-        print(game.product_name)
-        # print(game["productName"])
+        table_data.append([
+            game.id,
+            game.console_uri,
+            game.product_name,
+            game.price_1,
+            game.price_3,
+            game.price_2,
+            game.price_change_sign + game.price_change_percentage
+        ])
+
+    table = AsciiTable(table_data)
+
+    if reference_ebay:
+        ebay_parser = EbayParser(games)
+        ebay_parser.find_listings()
+    else:
+        print(table.table)
