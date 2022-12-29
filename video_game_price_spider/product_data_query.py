@@ -1,4 +1,5 @@
 import requests
+import time
 
 class ProductDataQuery:
     _base_url:str = "https://www.pricecharting.com/console"
@@ -59,6 +60,7 @@ class ProductDataQuery:
         self.set_cursor(int(response_json['cursor']))
 
         if self._cursor:
+            print('sleeping, cursor: ' + str(self._cursor))
             self.call_data()
 
     def get_endpoint(self)-> str:

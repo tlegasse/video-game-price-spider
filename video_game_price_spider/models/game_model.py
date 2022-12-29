@@ -1,13 +1,12 @@
-from peewee import CharField, IntegerField
+from peewee import CharField, FloatField, IntegerField
 from video_game_price_spider.models.base_model import Base
 
 class Game(Base):
     id: IntegerField = IntegerField(primary_key=True, unique=True)
-    name: CharField = CharField()
     console_uri: CharField = CharField()
-    price_1: CharField = CharField()
-    price_2: CharField = CharField()
-    price_3: CharField = CharField()
+    price_1: FloatField = FloatField()
+    price_2: FloatField = FloatField()
+    price_3: FloatField = FloatField()
     price_change: CharField = CharField()
     price_change_percentage: CharField = CharField()
     price_change_sign: CharField = CharField()
