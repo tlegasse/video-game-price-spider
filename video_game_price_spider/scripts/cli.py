@@ -1,10 +1,12 @@
 import json
 import os
+
 import click
+
 from video_game_price_spider.csv_product_data_writer import CsvProductDataWriter
 from video_game_price_spider.db_product_data_writer import DbProductDataWriter
-
 from video_game_price_spider.product_data_query import ProductDataQuery
+from video_game_price_spider.models.game_model import Game
 
 def load_console_json() -> dict :
     path: str = os.path.join(os.getcwd(), 'data', 'console_data.json')
@@ -91,8 +93,18 @@ def sync_console_data(ctx, method: str, brands: list[str], consoles: list[str]) 
     consoles_to_sync: list = []
 
     consoles_to_sync.extend(get_consoles_from_brands(ctx, brands))
-
     consoles_to_sync.extend(get_matched_consoles(ctx, consoles))
 
     for console in consoles_to_sync:
         update_by_console(console, method)
+
+
+@cli.command()
+@click.option('--title', '-t')
+@click.pass_obj
+def search(ctx, title):
+    games = Game.select().where(Game.product_name.contains(title))
+
+    for game in games:
+        print(game.product_name)
+        # print(game["productName"])
